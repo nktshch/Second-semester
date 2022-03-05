@@ -204,7 +204,6 @@ int main()
         }
         else
         {
-            printf("--%d %d %d\n", reg1, number, com);
             error = function(reg1, number, com);
         }
         
