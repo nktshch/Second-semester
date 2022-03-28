@@ -180,6 +180,18 @@ struct Node * right_descendant(struct Node * tree, struct Node * original)
 		p = tree;
 	}
 
+	if(p == NULL)
+	{
+		if(tree->right == NULL)
+		{
+			return NULL;
+		}
+		else
+		{
+			return tree->right;
+		}
+	}
+
 	if(p->right == NULL)
 	{
 		return p;
@@ -240,6 +252,13 @@ void remove_node(struct Node * tree, int x, struct Remove ** info)
 		printf("\nFound the victim!");
         (*info)->victim = v;
         struct Node * right_desc_parent = right_descendant(v, v);
+		printf("\nWe have to find its parent too...");
+        (*info)->link = parent(root, v);
+		if(right_desc_parent == NULL)
+		{
+			(*info)->max_on_left = NULL;
+			return;
+		}
 		struct Node * right_desc;
 		if(right_desc_parent->right != NULL)
 		{
@@ -250,8 +269,7 @@ void remove_node(struct Node * tree, int x, struct Remove ** info)
 			right_desc = right_desc_parent;
 		}
         (*info)->max_on_left = right_desc;
-        printf("\nWe have to find its parent too...");
-        (*info)->link = parent(root, v);
+        
 		return;
 	}
 	else if(x < v->val)
@@ -276,6 +294,34 @@ void remove_node(struct Node * tree, int x, struct Remove ** info)
 			return;
 		}
 	}
+	return;
+}
+
+void substitute_node (struct Node * tree, struct Remove ** info)
+{
+	// 1
+	if((*info)->max_on_left == NULL)
+	{
+		*((*info)->link) = NULL;
+		free(info);
+		return;
+	}
+
+	struct Node ** temp = parent(root, (*info)->max_on_left);
+	if ((*info)->link == NULL)
+	{
+		root = (*info)->max_on_left;
+	}
+	else
+	{
+		*((*info)->link) = *temp;
+	}
+	// 2
+	*temp = (*info)->max_on_left->left;
+	//3
+	(*info)->max_on_left->left = (*info)->victim->left;
+	(*info)->max_on_left->right = (*info)->victim->right;	
+
 	return;
 }
 
@@ -338,9 +384,11 @@ int main()
 	printf("\nChoose the victim! ");
 	int victim;
 	scanf("%d", &victim);
-    struct Remove * victim_info;
+    	struct Remove * victim_info;
 	remove_node(root, victim, &victim_info);
-    printf("\nVictim is %d, its substitute is %d", victim_info->victim->val, victim_info->max_on_left->val);
+    	//printf("\nVictim is %d, its substitute is %d", victim_info->victim->val, victim_info->max_on_left->val);
+
+	substitute_node(root, &victim_info);
 
 	printf("\n\nModified tree:");
 	print_tree_bfs(root);
