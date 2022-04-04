@@ -6,7 +6,6 @@
 #define check printf("Line number %d", __LINE__);
 
 int regs[4] = {0, 0, 0, 0};
-int number = 0;
 
 int first_reg(char x)
 {
@@ -38,48 +37,49 @@ int first_reg(char x)
     }
 }
 
-int second_reg(char y[4], int i)
+int second_reg(char y[4], int i, int *p_number)
 {
-    int j = 0, senior = 0;
-    number = 0;
-    if(y[0] <= '9' && y[0] >= '0' || y[0] == '-')
+    int j = 0, negative = 0;
+    *p_number = 0;
+    if((y[0] <= '9' && y[0] >= '0') || y[0] == '-')
     {
         if(y[0] == '-')
         {
-            senior = 1;
+            negative = 1;
         }
-        for (i; i >= senior; i--)
+        for (i; i >= negative; i--)
         {
-            number += (y[i] - '0') * pow(10, j);
+            *p_number += (y[i] - '0') * round(pow(10, j));
             j++;
         }
-        if(senior == 1)
+        if(negative == 1)
         {
-            number *= -1;
+            *p_number *= -1;
         }
         return 0;
     }
+
     else
     {
         switch (y[1]) {
             case 'a':
             {
-                number =  regs[0];
+                *p_number =  regs[0];
                 return 0;
             }
             case 'b':
             {
-                number =  regs[1];
+                *p_number =  regs[1];
                 return 0;
             }
             case 'c':
             {
-                number =  regs[2];
+                *p_number =  regs[2];
                 return 0;
             }
             case 'd':
             {
-                number =  regs[3];
+                *p_number =  regs[3];
                 return 0;
             }
             default :
@@ -121,24 +121,24 @@ int the_command(int c)
     }
 }
 
-int function(int first, int second, int func)
+int function(int first, int *second, int func)
 {
     switch (func) {
         case 1:
         {
-            regs[first] = second;
+            regs[first] = *second;
             return 0;
             break;
         }
         case 2:
         {
-            regs[first] += second;
+            regs[first] += *second;
             return 0;
             break;
         }
         case 3:
         {
-            regs[first] -= second;
+            regs[first] -= *second;
             return 0;
             break;
         }
@@ -152,8 +152,7 @@ int function(int first, int second, int func)
 
 int main()
 {
-    
-    int com, reg1, reg2, i, quit = 1, error;
+    int com, reg1, reg2, i, quit = 1, error = 0, number = 0;
     char command[4] = "", register1[4] = "", register2[4] = "";
     char * p;
     printf("Type 'ret' to quit\n");
@@ -180,6 +179,7 @@ int main()
 	    	i++;
 	    	reg1 = getchar();
 	    }
+        scanf(" ");
         i = 0;
         for (reg2 = getchar(); reg2 != '\n'; )
 	    {
@@ -188,8 +188,9 @@ int main()
 	    	reg2 = getchar();
 	    }
         reg1 = first_reg(register1[1]);
-        reg2 = second_reg(register2, i - 1);
+        reg2 = second_reg(register2, i - 1, &number);
         com = the_command(command[0]);
+
         if(com == -1)
         {
             printf("Unknown command");
@@ -204,7 +205,7 @@ int main()
         }
         else
         {
-            error = function(reg1, number, com);
+            error = function(reg1, &number, com);
         }
         
         if(error == 0)
@@ -215,6 +216,7 @@ int main()
         {
             printf("Something went wrong :/\n");
         }
+        
     }
     return 0;
 }
