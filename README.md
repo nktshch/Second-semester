@@ -1,4 +1,4 @@
 # Second-semester
 Simple_registers: работают  
-Binary_tree_v2: надо доделать  
+Binary_delete_node: функции не int'овые  
 Arrays_ASM: работает (меняет регистр)  
