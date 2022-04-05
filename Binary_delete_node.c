@@ -4,17 +4,17 @@
 #define max_N_node 100
 
 struct Node {
-    int val;
-    struct Node * left;
-    struct Node * right;
+	int val;
+	struct Node * left;
+	struct Node * right;
 };
 
 struct Node * root;
 
 struct Remove {
-    struct Node * victim;
-    struct Node * sub;
-    struct Node ** link;
+	struct Node * victim;
+	struct Node * sub;
+	struct Node ** link;
 	struct Node ** link_to_sub;
 };
 
@@ -140,28 +140,28 @@ void substitute(struct Remove ** info, struct Node * left)
 struct Node ** parent_link(struct Node * tree, struct Node * target) // Поиск ссылки на элемент
 {
 	// Я хотел сделать эту функцию void'овой, но передумал
-    struct Node * searcher = tree;
-    
-    if(searcher->right == target)
-    {
+	struct Node * searcher = tree;
+	
+	if(searcher->right == target)
+	{
 		return &(searcher->right);
 	}
-    else if(searcher->left == target)
-    {
+	else if(searcher->left == target)
+	{
 		return &(searcher->left);
 	}
 	else if(target->val < searcher->val)
 	{
 		if(searcher->left != NULL)
-        {
-            return parent_link(searcher->left, target);
+		{
+			return parent_link(searcher->left, target);
 		}
 	}
 	else
 	{
 		if(searcher->right != NULL)
-        {
-            return parent_link(searcher->right, target);
+		{
+			return parent_link(searcher->right, target);
 		}
 	}
 }
@@ -206,24 +206,24 @@ void kill_the_victim(struct Node * tree, struct Remove ** info)
 
 void gather_info(struct Node * tree, int value, struct Remove ** info)
 {
-    if(tree == NULL)
-    {
-        printf("Empty tree\n");
-        return;
-    }
+	if(tree == NULL)
+	{
+		printf("Empty tree\n");
+		return;
+	}
 
 	struct Node * searcher = tree;
-    
+
 	printf("Searching for victim... (%d)\n", searcher->val);
 
 	if(value == searcher->val)
-    {
+	{
 		printf("\nFound the victim!");
-        (*info)->victim = searcher;
-        // Нашли удаляемый
-        
-        printf("\nWe have to find the substitute...");
-        substitute(info, (*info)->victim->left);
+		(*info)->victim = searcher;
+		// Нашли удаляемый
+		
+		printf("\nWe have to find the substitute...");
+		substitute(info, (*info)->victim->left);
 		if((*info)->sub == NULL)
 		{
 			(*info)->sub = (*info)->victim->right;
@@ -233,8 +233,8 @@ void gather_info(struct Node * tree, int value, struct Remove ** info)
 		// Если же записался NULL, значит, что у удаляемого нет левых потомков и
 		// заменяющим станет правый потомок (или NULL, если и его нет)
 
-        printf("\nThe victim's parent...");
-        (*info)->link = parent_link(root, (*info)->victim);
+		printf("\nThe victim's parent...");
+		(*info)->link = parent_link(root, (*info)->victim);
 		// Нашли ссылку на удаляемый
 
 		printf("\nFinally, the sub's parent...");
@@ -246,8 +246,8 @@ void gather_info(struct Node * tree, int value, struct Remove ** info)
 	else if(value < searcher->val)
 	{
 		if(searcher->left != NULL)
-        {
-            gather_info(searcher->left, value, info);
+		{
+			gather_info(searcher->left, value, info);
 		}
 		else
 		{
@@ -258,8 +258,8 @@ void gather_info(struct Node * tree, int value, struct Remove ** info)
 	else
 	{
 		if(searcher->right != NULL)
-        {
-            gather_info(searcher->right, value, info);
+		{
+			gather_info(searcher->right, value, info);
 		}
 		else
 		{
@@ -271,9 +271,9 @@ void gather_info(struct Node * tree, int value, struct Remove ** info)
 
 int main()
 {
-    int ERRORS[3] = {-1, -1, -1};
+	int ERRORS[3] = {-1, -1, -1};
 
-    root = NULL;
+	root = NULL;
 	int number_of_nodes;
 	printf("Insert number of nodes: ");
 	scanf("%d", &number_of_nodes);
@@ -299,19 +299,19 @@ int main()
 	gather_info(root, victim, &victim_info); // собираем инфо об удаляемом
 	// printf("\n%p", victim_info->victim); - дебаг
 
-    /*
+	/*
 	switch (ERRORS[0])
-    {
-        case 0:
-            break;
-        case 1:
-            printf("\nThe tree is empty");
-            return 0;
-        default:
-            printf("\nUnknown error occured upon gathering info");
-            return 0;
-    } */
-    
+	{
+		case 0:
+			break;
+		case 1:
+			printf("\nThe tree is empty");
+			return 0;
+		default:
+			printf("\nUnknown error occured upon gathering info");
+			return 0;
+	} */
+
 	// Почему-то int'овые функции после return меняют адреса, или что-то типа того:
 	// Я создал функцию int gather_info, аналогичную void (ctrl+c ctrl+v и чуть-чуть поменять),
 	// но ничего не заработало. В ходе дебага выяснилось, что прямо перед return всё, что лежит в
