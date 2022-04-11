@@ -1,4 +1,4 @@
 # Second-semester
-Simple_registers: работают  
+CPU emulation: работает  
 Binary_delete_node: функции не int'овые  
-Arrays_ASM: работает (меняет регистр)  
+Inline_ASM: работает (меняет регистр)  
